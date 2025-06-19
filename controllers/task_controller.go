@@ -69,11 +69,12 @@ func (tc *TaskController) Delete(c *gin.Context) {
 
 func (tc *TaskController) Create(c *gin.Context) {
 	var task models.Task
-	if err := c.ShouldBindJSON(&task); err != nil {
-		log.Printf("Invalid JSON input for task: %v", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
-		return
-	}
+	//Doesnt need right now, but when Text for tasks will added that's necessery
+	// if err := c.ShouldBindJSON(&task); err != nil {
+	// 	log.Printf("Invalid JSON input for task: %v", err)
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+	// 	return
+	// }
 
 	err := tc.service.Create(&task)
 	if err != nil {
@@ -85,22 +86,3 @@ func (tc *TaskController) Create(c *gin.Context) {
 	log.Printf("Task created successfully: %+v", task)
 	c.JSON(http.StatusOK, gin.H{"success": "Task created successfully"})
 }
-
-// func (tc *TaskController) Update(c *gin.Context) {
-// 	var task models.Task
-// 	if err := c.ShouldBindJSON(&task); err != nil {
-// 		log.Printf("Invalid JSON input for task update: %v", err)
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
-// 		return
-// 	}
-
-// 	err := tc.service.Update(task)
-// 	if err != nil {
-// 		log.Printf("Error updating task with ID %d: %v", task.ID, err)
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Cannot update task"})
-// 		return
-// 	}
-
-// 	log.Printf("Task with ID %d updated successfully", task.ID)
-// 	c.JSON(http.StatusOK, gin.H{"success": "Task updated successfully"})
-// }

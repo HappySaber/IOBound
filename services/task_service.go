@@ -26,9 +26,9 @@ func (ts *TaskService) Create(task *models.Task) error {
 	ts.mu.Lock()
 	defer ts.mu.Unlock()
 
-	if task == nil {
-		return errors.New("null task")
-	}
+	// if task == nil {
+	// 	return errors.New("null task")
+	// }
 
 	task.ID = ts.nextID
 	task.Status = "pending"
@@ -62,10 +62,10 @@ func (ts *TaskService) GetByID(id int) (*models.TaskResponse, error) {
 		return nil, errors.New("task not found")
 	}
 	taskResponse := &models.TaskResponse{
-		ID:                task.ID,
-		Status:            task.Status,
-		CreatedAt:         task.CreatedAt,
-		Text:              task.Text,
+		ID:        task.ID,
+		Status:    task.Status,
+		CreatedAt: task.CreatedAt.Format("2006-01-02"),
+		//Text:              task.Text,
 		DurationFormatted: task.DurationFormatted,
 	}
 	return taskResponse, nil
@@ -78,10 +78,10 @@ func (ts *TaskService) GetAll() ([]*models.TaskResponse, error) {
 	taskResponses := make([]*models.TaskResponse, 0, len(ts.tasks))
 	for _, t := range ts.tasks {
 		taskResponse := &models.TaskResponse{
-			ID:                t.ID,
-			Status:            t.Status,
-			CreatedAt:         t.CreatedAt,
-			Text:              t.Text,
+			ID:        t.ID,
+			Status:    t.Status,
+			CreatedAt: t.CreatedAt.Format("2006-01-02"),
+			//Text:              t.Text,
 			DurationFormatted: t.DurationFormatted,
 		}
 		taskResponses = append(taskResponses, taskResponse)
@@ -101,7 +101,7 @@ func (ts *TaskService) processTask(id int) {
 	ts.mu.Unlock()
 
 	log.Printf("Task %d started", id)
-	//time.Sleep(3 * time.Minute)
+
 	//time.Sleep(30 * time.Second) //test
 
 	durationOfTask := utils.RandRange(180, 300)
@@ -109,11 +109,9 @@ func (ts *TaskService) processTask(id int) {
 	for range durationOfTask {
 		time.Sleep(1 * time.Second)
 
-		ts.mu.Lock()
 		task.Duration = time.Since(task.StartedAt)
 
 		task.DurationFormatted = utils.FormatDuration(task.Duration)
-		ts.mu.Unlock()
 	}
 
 	ts.mu.Lock()
